@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnKonum = findViewById(R.id.btnKonum);
 
         LinearLayout layoutBolumler = findViewById(R.id.layoutBolumler);
+        LinearLayout layoutSinav = findViewById(R.id.layoutSinav);
         Button btnAgac = findViewById(R.id.btnAgac);
         Button btnBilisim = findViewById(R.id.btnBilisim);
         Button btnEnerji = findViewById(R.id.btnEnerji);
@@ -71,10 +72,9 @@ public class MainActivity extends AppCompatActivity {
         }
         c.close();
 
-        icPaper.setOnClickListener(v -> {
+        layoutSinav.setOnClickListener(v -> {
             db.execSQL("UPDATE sinav SET isim = 'Mobil Programlama - Güncellendi' WHERE id = 1");
 
-            // Güncel veriyi tekrar çek
             Cursor cursor = db.rawQuery("SELECT isim FROM sinav WHERE id = 1", null);
             if (cursor.moveToFirst()) {
                 String guncelSinavAdi = cursor.getString(0);
@@ -161,10 +161,8 @@ public class MainActivity extends AppCompatActivity {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
 
-                    // ✅ SQLite'a kaydet
                     db.execSQL("INSERT INTO konumlar (latitude, longitude) VALUES (" + latitude + ", " + longitude + ")");
 
-                    // ✅ Haritada göster
                     Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(Konumum)");
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
