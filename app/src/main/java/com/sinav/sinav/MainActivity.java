@@ -3,6 +3,7 @@ package com.sinav.sinav;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,12 +33,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // SQLite Veri Tabanı Oluştur (EKLENDİ)
-        db = openOrCreateDatabase("bolumler.db", MODE_PRIVATE, null);
-        db.execSQL("CREATE TABLE IF NOT EXISTS bolumler (id INTEGER PRIMARY KEY, isim TEXT)");
-        db.execSQL("INSERT OR IGNORE INTO bolumler (id, isim) VALUES (1, 'Bilişim Sistemleri')");
-        db.execSQL("UPDATE bolumler SET isim = 'Bilişim Sistemleri Mühendisliği' WHERE id = 1");
+        db = openOrCreateDatabase("sinav.db", MODE_PRIVATE, null);
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS sinav (id INTEGER PRIMARY KEY AUTOINCREMENT, isim TEXT)");
+        db.execSQL("INSERT OR IGNORE INTO sinav (id, isim) VALUES (1, 'Mobil Programlama SQLite ile eklendi')");
+        db.execSQL("UPDATE sinav SET isim = 'Mobil Programlama SQLite ile eklendi' WHERE id = 1");
+
         db.execSQL("CREATE TABLE IF NOT EXISTS konumlar (id INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL, longitude REAL)");
+
+        TextView txtSinavBasligi = findViewById(R.id.txtSinavBasligi);
 
         Button btnToast = findViewById(R.id.btnToast);
         Button btnDizin = findViewById(R.id.btnDizin);
@@ -54,10 +59,34 @@ public class MainActivity extends AppCompatActivity {
         Button btnDizinleriGor = findViewById(R.id.btnDizinleriGor);
 
         ImageView icWhatsapp = findViewById(R.id.ic_wp);
+        ImageView icPaper = findViewById(R.id.ic_sinav);
+
+        TextView txtTitle = findViewById(R.id.title);
 
 
-        // Bölüm Seç butonu davranışı
+        Cursor c = db.rawQuery("SELECT isim FROM sinav WHERE id = 1", null);
+        if (c.moveToFirst()) {
+            String sinavAdi = c.getString(0);
+            txtSinavBasligi.setText("Sınav Adı: " + sinavAdi);
+        }
+        c.close();
+
+        icPaper.setOnClickListener(v -> {
+            db.execSQL("UPDATE sinav SET isim = 'Mobil Programlama - Güncellendi' WHERE id = 1");
+
+            // Güncel veriyi tekrar çek
+            Cursor cursor = db.rawQuery("SELECT isim FROM sinav WHERE id = 1", null);
+            if (cursor.moveToFirst()) {
+                String guncelSinavAdi = cursor.getString(0);
+                txtSinavBasligi.setText("Sınav Adı: " + guncelSinavAdi);
+            }
+            cursor.close();
+        });
+
+
         btnToast.setOnClickListener(v -> {
+            Toast.makeText(this, "Bölümünüzü Seçiniz", Toast.LENGTH_SHORT).show();
+            txtTitle.setText("Teknoloji Fakültesi");
             if (layoutBolumler.getVisibility() == View.GONE) {
                 layoutBolumler.setVisibility(View.VISIBLE);
             } else {
@@ -75,15 +104,21 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Alt butonlar (opsiyonel toast)
-        btnAgac.setOnClickListener(v ->
-                Toast.makeText(this, "Ağaç İşleri seçildi", Toast.LENGTH_SHORT).show());
+        btnAgac.setOnClickListener(v -> {
+            Toast.makeText(this, "Ağaç İşleri Endüstri seçildi", Toast.LENGTH_SHORT).show();
+            txtTitle.setText("Teknoloji Fakültesi Ağaç İşleri Endüstri");
+        });
 
-        btnBilisim.setOnClickListener(v ->
-                Toast.makeText(this, "Bilişim seçildi", Toast.LENGTH_SHORT).show());
+        btnBilisim.setOnClickListener(v -> {
+            Toast.makeText(this, "Bilişim Sistemleri seçildi", Toast.LENGTH_SHORT).show();
+            txtTitle.setText("Teknoloji Fakültesi Bilişim Sistemleri");
+        });
 
-        btnEnerji.setOnClickListener(v ->
-                Toast.makeText(this, "Enerji seçildi", Toast.LENGTH_SHORT).show());
+        btnEnerji.setOnClickListener(v -> {
+            Toast.makeText(this, "Enerji Sistemleri seçildi", Toast.LENGTH_SHORT).show();
+            txtTitle.setText("Teknoloji Fakültesi Enerji Sistemleri");
+        });
+
 
 
         btnDizin.setOnClickListener(v -> {
@@ -101,18 +136,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnWhatsapp.setOnClickListener(v -> {
-            Intent sendIntent = new Intent(Intent.ACTION_SEND);
-            sendIntent.setType("text/plain");
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "Merhaba!");
-            sendIntent.setPackage("com.whatsapp");
-            try {
-                startActivity(sendIntent);
-            } catch (Exception e) {
-                Toast.makeText(this, "WhatsApp yüklü değil!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        icWhatsapp.setOnClickListener(v-> {
             Intent sendIntent = new Intent(Intent.ACTION_SEND);
             sendIntent.setType("text/plain");
             sendIntent.putExtra(Intent.EXTRA_TEXT, "Merhaba!");

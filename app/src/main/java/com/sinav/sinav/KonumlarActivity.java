@@ -28,10 +28,10 @@ public class KonumlarActivity extends AppCompatActivity {
         txtVeritabaniYolu = findViewById(R.id.txtVeritabaniYolu);
         konumListesi = new ArrayList<>();
 
-        File veritabaniDosyasi = getDatabasePath("bolumler.db");
+        File veritabaniDosyasi = getDatabasePath("sinav.db");
         txtVeritabaniYolu.setText("Veritabanı yolu: " + veritabaniDosyasi.getAbsolutePath());
 
-        db = openOrCreateDatabase("bolumler.db", MODE_PRIVATE, null);
+        db = openOrCreateDatabase("sinav.db", MODE_PRIVATE, null);
 
         Cursor cursor = db.rawQuery("SELECT * FROM konumlar", null);
         while (cursor.moveToNext()) {
