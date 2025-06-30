@@ -26,7 +26,7 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 100;
-    private SQLiteDatabase db; // EKLENDİ
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +58,6 @@ public class MainActivity extends AppCompatActivity {
         Button btnKonumlariGor = findViewById(R.id.btnKonumlariGor);
 
         Button btnDizinleriGor = findViewById(R.id.btnDizinleriGor);
-
-        ImageView icWhatsapp = findViewById(R.id.ic_wp);
-        ImageView icPaper = findViewById(R.id.ic_sinav);
 
         TextView txtTitle = findViewById(R.id.title);
 
